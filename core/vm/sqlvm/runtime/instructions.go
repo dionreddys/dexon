@@ -1673,6 +1673,8 @@ func opCast(ctx *common.Context, in Instruction) (err error) {
 	}
 
 	in.Registers[in.Output] = op2
+
+	err = applyGas(ctx, in.GasFunc, op2.bytesCount())
 	return
 }
 
