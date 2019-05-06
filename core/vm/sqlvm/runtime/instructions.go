@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math"
 	"math/big"
 	"regexp"
 	"sort"
@@ -170,6 +171,8 @@ func opLoad(ctx *common.Context, in Instruction) error {
 		}
 	}
 	in.Registers[in.Output] = &op
+
+	err = applyGas(ctx, in.GasFunc, op.bytesCount())
 	return nil
 }
 
@@ -420,6 +423,34 @@ func flowCheck(ctx *common.Context, v decimal.Decimal, dType ast.DataType) (err 
 
 func (op *Operand) elementCount() uint64 {
 	return uint64(len(op.Meta) * len(op.Data))
+}
+
+func (op *Operand) bytesCount() (count uint64) {
+	var (
+		dt    ast.DataType
+		major ast.DataTypeMajor
+		cache uint64
+	)
+
+	for i := 0; i < len(op.Meta); i++ {
+		dt = op.Meta[i]
+		major, _ = ast.DecomposeDataType(dt)
+		switch major {
+		case ast.DataTypeMajorDynamicBytes:
+			for j := 0; j < len(op.Data); j++ {
+				cache += uint64(len(op.Data[j][i].Bytes))
+			}
+		default:
+			cache = uint64(dt.Size()) * uint64(len(op.Data))
+		}
+
+		if (cache + count) < count {
+			// charge max which should occur out of gas
+			count = math.MaxUint64
+			return
+		}
+	}
+	return
 }
 
 func opAdd(ctx *common.Context, in Instruction) (err error) {
