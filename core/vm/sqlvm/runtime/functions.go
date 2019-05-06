@@ -229,7 +229,7 @@ func fnMsgData(ctx *common.Context, in Instruction, length uint64) (result *Oper
 		[]ast.DataType{ast.ComposeDataType(ast.DataTypeMajorDynamicBytes, 0)},
 		r.clone, length,
 	)
-	err = applyGas(ctx, in.GasFunc, result.elementCount())
+	err = applyGas(ctx, in.GasFunc, result.bytesCount())
 	return
 }
 
@@ -239,7 +239,7 @@ func fnTxOrigin(ctx *common.Context, in Instruction, length uint64) (result *Ope
 		[]ast.DataType{ast.ComposeDataType(ast.DataTypeMajorAddress, 0)},
 		r.clone, length,
 	)
-	err = applyGas(ctx, in.GasFunc, result.elementCount())
+	err = applyGas(ctx, in.GasFunc, result.bytesCount())
 	return
 }
 
@@ -268,7 +268,7 @@ func fnRand(ctx *common.Context, in Instruction, length uint64) (result *Operand
 		[]ast.DataType{ast.ComposeDataType(ast.DataTypeMajorUint, 31)},
 		fn, length,
 	)
-	err = applyGas(ctx, in.GasFunc, result.elementCount())
+	err = applyGas(ctx, in.GasFunc, result.bytesCount())
 	return
 }
 
@@ -558,6 +558,6 @@ func fnSubString(ctx *common.Context, in Instruction, length uint64) (result *Op
 		}
 	}
 
-	err = applyGas(ctx, in.GasFunc, result.elementCount())
+	err = applyGas(ctx, in.GasFunc, result.bytesCount())
 	return
 }
