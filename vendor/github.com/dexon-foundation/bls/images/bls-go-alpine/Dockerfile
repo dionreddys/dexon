@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:1.21.4-alpine3.18
 MAINTAINER Jimmy Hu <jimmy.hu@dexon.org>
 
 # Install dependencies
